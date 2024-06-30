@@ -66,7 +66,7 @@ export let SugCard = ({
           userInfo?.friends.filter((e) => e.id === result?.id).length === 1;
         let checked = isFriend;
         let route = `/profile/${result?.id}`;
-        return checked && isChat ? (
+        return isChat ? (
           <Link
             href={"/messaging/" + userInfo._id + "-" + result?._id}
             className={`user-card ${
@@ -99,13 +99,7 @@ export let SugCard = ({
                 className=" cursor-pointer rounded-full object-contain"
               /> */}
               <div className="flex-1 text-ellipsis  relative ">
-                <Image
-                  src={"/" + result?.sport.split(" ")[0] + ".svg"}
-                  alt={result?.sport}
-                  height={result?.sport === "kung Fu" ? 20 : 30}
-                  width={result?.sport === "kung Fu" ? 20 : 30}
-                  className="-translate-x-4 -translate-y-4 top-0 left-0 absolute"
-                />
+                
                 <div className=" cursor-pointer w-full flex gap-[3px]">
                   <h5 className=" text-base-semibold text-light-1 z-20">
                     {result?.name?.length > 11
