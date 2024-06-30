@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en"  >
-      <body className={inter.className+"bg-[#201325]"}>
+      <body className={inter.className+" bg-[#201325]"}>
       <main className=' flex flex-row w-full '>
         <section className="main-container p-0" >
         <div className=" w-full ">
