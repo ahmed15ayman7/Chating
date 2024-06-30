@@ -143,12 +143,12 @@ const ChatBox: React.FC<{ Ids?: string }> = ({ Ids }) => {
   return  (
     <div className=" bottom-0 p-4 pb-10 relative rounded-lg w-full h-full flex flex-col">
       <div className="  flex z-50 absolute top-0 left-0 right-0">
+        <div className="user-card_avatar items-center bg-[#ffffff20] max-xl:p-0 p-1">
       <Link
-          href={"/messaging"}
+          href={"/"}
           className="px-2 py-2 bg-blue-500 text-white rounded-lg max-xl:block hidden">
           <Image src="/assets/Goback.svg" alt="Goback" height={20} width={20} />
         </Link>
-        <div className="user-card_avatar bg-[#ffffff20] max-xl:p-0 p-1">
         <div className="relative   aspect-square h-[48px] w-[48px]  ">
                       <img
                         src={result?.image}
