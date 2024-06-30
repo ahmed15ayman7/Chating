@@ -42,7 +42,7 @@ const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg }) => {
           <SugCard result2={JSON.stringify(users.users)} userInfo2={JSON.stringify(userInfo)} type={"users"} isChat={isChat} Ids={Ids ? Ids : ''} islg={islg} refrish={setrefrish} />}
       </div>
     </section>
-  );
+  ); 
 };
 
 export default RightSidebar;

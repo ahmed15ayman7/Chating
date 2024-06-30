@@ -13,7 +13,6 @@ export const dynamic = 'force-dynamic'
 const ChatPage = () => {
   const [size, setSize] = useState<number>()
 useEffect(() => {
-
     setSize(window.innerWidth)
     window.addEventListener('resize',()=>{setSize(window.innerWidth)})
 }, [size])

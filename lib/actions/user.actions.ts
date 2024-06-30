@@ -14,9 +14,7 @@ interface props {
   username: string;
   name: string;
   bio: string;
-  sport: String;
   image: string;
-  type: string;
   phone: string;
   path: string;
 }
@@ -27,12 +25,10 @@ export interface UserData {
   name: string;
   bio: string;
   image: string;
-  sport: string;
   phone: string;
   posts: PostData[];
   communities: string[];
   onboarding: boolean;
-  type: string;
   friends: {
     _id: string;
     id: string;
@@ -42,24 +38,21 @@ export interface UserData {
   }[];
 }
 export interface Result {
-  _id: string;
-  name: string;
-  image: string;
-  id: string;
-  sport: string;
-  type: string;
-  phone: string;
-  posts: PostData[];
+  _id: string|undefined;
+  name: string|undefined;
+  image: string|undefined;
+  id: string|undefined;
+  type: string|undefined;
+  phone: string|undefined;
+  posts: PostData[]|undefined;
 }
 export async function updateUser({
   userId,
   username,
-  sport,
   name,
   bio,
   image,
   path,
-  type,
   phone,
 }: props): Promise<void> {
   connectDB();
@@ -69,12 +62,10 @@ export async function updateUser({
       {
         username: username,
         bio: bio,
-        sport: sport,
         name: name,
         image: image,
         onboarding: true,
         phone: phone,
-        type: type,
       },
       { upsert: true }
     );

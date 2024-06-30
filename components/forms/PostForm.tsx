@@ -81,9 +81,7 @@ const PostForm =  ({  post,action,id ,image,
       console.log("oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo")
       readfile.readAsDataURL(file);
     }
-    
   }
-  // Handler
   const onSubmit = async (value: z.infer<typeof PostValidation2>) => {
     setIsLoadingCreate(true)
       console.log("-------ohgfdfghjhg--------")

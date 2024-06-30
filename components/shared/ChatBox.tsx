@@ -6,10 +6,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Loader from "@/components/shared/Loader";
-import { UserData } from "@/lib/actions/user.actions";
+import { UserData, fetchUser } from "@/lib/actions/user.actions";
 import { formatDistanceToNow,format } from "date-fns";
 import { pusherClient } from "@/lib/pusher";
 import { GetChat } from "@/lib/actions/room.actions";
+import { currentUser } from '@clerk/nextjs/server';
 
 interface User {
   _id: string;
@@ -68,11 +69,8 @@ const ChatBox: React.FC<{ Ids?: string }> = ({ Ids }) => {
   let chat = chatJSon && JSON.parse(chatJSon);
   useEffect(() => {
     const fetchData = async () => {
-      const userInfoJson = sessionStorage.getItem("userInfo");
-      const user = sessionStorage.getItem("id");
-      const userInfo2 = userInfoJson ? JSON.parse(userInfoJson) : null;
+      const userInfo2 = await fetchUser()
       setUserInfo(userInfo2);
-      if (!user) return router.replace("/sign-in");
       if (!userInfo2?.onboarding) router.replace("/onboarding");
       if (frindId) {
         const chat = await GetChat({

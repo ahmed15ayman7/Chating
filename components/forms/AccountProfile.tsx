@@ -11,29 +11,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import * as z from "zod";
 import Image from "next/image";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { isBase64Image } from "@/lib/utils";
 import { useUploadThing } from "@/uploadthing";
 import { updateUser } from "@/lib/actions/user.actions";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { RadioGroupItem,RadioGroup} from "../ui/radio-group";
+
+
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { E164Number } from "libphonenumber-js/types.cjs";
+
 interface props {
   userData: {
     id: string | undefined;
@@ -47,33 +38,12 @@ interface props {
     phone: string|undefined;
   };
 }
-let sports=[
-  "Football",
-"Running",
-"Tennis",
-"Basketball",
-"Swimming",
-"Karate",
-"Diving",
-"Fitness",
-"Horse Riding",
-"Cycling",
-"Skating",
-"Handball",
-"Golf",
-"Hockey",
-"Chess",
-"kung Fu",
-"Boxing",
-"Bowling",
-]
+
 const AccountProfile = ({ userData }: props) => {
   let pathname = usePathname();
   let router = useRouter();
   let { startUpload } = useUploadThing("mediaPost");
   const [files, setFiles] = useState<File[]>([]);
-  const [Type, setType] = useState<string>('player');
-  const [Username, setUsername] = useState<string>(userData?.username?userData.username:'');
   let form = useForm<z.infer<typeof UserValidation>>({
     resolver: zodResolver(UserValidation),
     defaultValues: {
@@ -81,8 +51,6 @@ const AccountProfile = ({ userData }: props) => {
       name: userData?.name || "",
       username: userData?.username ||'',
       bio: userData?.bio || "",
-      sport: userData.sport ||"",
-      type: userData.type ||"player",
       phone: userData.phone ||"",
     },
   });
@@ -105,8 +73,6 @@ const AccountProfile = ({ userData }: props) => {
     }
   }
   async function onSubmit(values: z.infer<typeof UserValidation>) {
-
-
     try {
       console.log("Submit update user ");
       const blob = values.profile_photo;
@@ -122,9 +88,7 @@ const AccountProfile = ({ userData }: props) => {
             username: values.username,
             name: values.name,
             bio: values.bio,
-            sport: values.sport,
             image: values.profile_photo,
-            type: values.type,
             phone: values.phone,
             path: pathname,
           })
@@ -181,48 +145,18 @@ const AccountProfile = ({ userData }: props) => {
         />
         <FormField
           control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-            <RadioGroup className="flex" onChange={(e:any)=>{
-              field.onChange(e)
-              setType(e.target?.value)
-            }} name={field.name} onBlur={field.onBlur} ref={field.ref} disabled={field.disabled} defaultValue={field.value}>
-  <div className="flex items-center space-x-2">
-    <RadioGroupItem value={'player'} id="option-one" />
-    <Label htmlFor="option-one">Player</Label>
-  </div>
-  <div className="flex items-center space-x-2">
-    <RadioGroupItem value={'agent'} id="option-two"/>
-    <Label htmlFor="option-two">Agent</Label>
-  </div>
-  <div className="flex items-center space-x-2">
-    <RadioGroupItem value={'club'} id="option-three"/>
-    <Label htmlFor="option-three">Club</Label>
-  </div>
-  <div className="flex items-center space-x-2">
-    <RadioGroupItem value={'company'} id="option-four"/>
-    <Label htmlFor="option-four">Company</Label>
-  </div>
-</RadioGroup>
-</FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
               {/* <FormLabel className=' text-white'>Name</FormLabel> */}
               <FormControl>
                 <Input
-                  placeholder={`Enter your ${Type==='club'?'Club':Type==='company'?'Company':''} name`}
+                  placeholder={`Enter your name`}
                   className=" account-form_input"
                   name={field.name} disabled={field.disabled}  value={field.value}
                   onChange={e=>{
                     field.onChange(e);
-                    (Type==='company'||Type==='club')&&setUsername(e.target.value)
+                    
                   }}
                   />
               </FormControl>
@@ -239,10 +173,9 @@ const AccountProfile = ({ userData }: props) => {
               <FormControl>
                 <Input
                   placeholder="Enter your username"
-                  name={field.name} disabled={field.disabled}  value={(Type==='company'||Type==='club')&&Username?Username.toLowerCase():field.value}
+                  name={field.name} disabled={field.disabled}  value={field.value}
                   onChange={e=>{
                     field.onChange(e);
-                    (Type==='company'||Type==='club')&&setUsername(e.target.value)
                   }}
                   className="account-form_input"
                 />
@@ -271,7 +204,6 @@ const AccountProfile = ({ userData }: props) => {
             </FormItem>
           )}
           />
-        
         <FormField
           control={form.control}
           name="bio"
@@ -290,45 +222,6 @@ const AccountProfile = ({ userData }: props) => {
             </FormItem>
           )}
         />
-        {Type==='player'?
-        <FormField
-          control={form.control}
-          name="sport"
-          render={({ field }) => (
-            <Select name={field.name} disabled={field.disabled}  onValueChange={field.onChange}   defaultValue={field.value}>
-              <SelectTrigger className=" account-form_input">
-                <SelectValue className="flex flex-row gap-5" placeholder="Select your sport" />
-              </SelectTrigger>
-              <SelectContent className="account-form_input">
-                <SelectGroup>
-                  <SelectLabel>Select your sport</SelectLabel>
-                  {sports.map(e=>
-                  <SelectItem  key={e} value={e}>
-                    <div className="flex gap-5" >
-                    <Image src={'/'+e.split(' ')[0]+".svg"} alt={e}  height={30} width={30}/> {e}
-                    </div>
-                    </SelectItem>
-                  )}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          )}
-        />:<FormField
-        control={form.control}
-        name="sport"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <Input
-                type="hidden"
-                name={field.name} disabled={field.disabled}  value={Type}
-              />
-            </FormControl>
-
-            <FormMessage />
-          </FormItem>
-        )}
-      />}
         <Button type="submit" className=" bg-primary-500">
           Submit
         </Button>
