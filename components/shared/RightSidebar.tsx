@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { fetchAllUser, fetchUser } from "@/lib/actions/user.actions";
 import { SugCard } from "../cards/sugCard";
+import { useRouter } from 'next/navigation';
 
 interface Props {
   isChat?: boolean;
@@ -14,7 +15,7 @@ const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg }) => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [users, setUsers] = useState<any>(null);
   const [refrish, setrefrish] = useState<any>(null);
-
+  let navigate =useRouter()
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,7 +25,7 @@ const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg }) => {
           pageNum: 1,
           pageSize: 100,
         });
-        setUserInfo(userInfo);
+        userInfo?setUserInfo(userInfo):navigate.replace("/onboarding");
         setUsers(users);
       } catch (error) {
         console.error("Error fetching data:", error);
