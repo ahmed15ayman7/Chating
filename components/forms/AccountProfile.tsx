@@ -32,9 +32,7 @@ interface props {
     username: string | null | undefined;
     name: string;
     bio: string;
-    sport: string ;
     image: string | undefined;
-    type: string|undefined;
     phone: string|undefined;
   };
 }

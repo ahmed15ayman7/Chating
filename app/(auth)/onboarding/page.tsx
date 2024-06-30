@@ -15,9 +15,8 @@ interface usData {
   username: string | null | undefined;
   name: string;
   bio: string;
-  sport: string;
+
   image: string | undefined;
-  type: string| undefined;
   phone: string| undefined;
 }
 const Onboarding = async () => {
@@ -32,9 +31,7 @@ const Onboarding = async () => {
     username: user?.username || userInfo?.username,
     name: user?.firstName || userInfo?.name || "",
     bio: userInfo?.bio || "",
-    sport: userInfo?.sport || "",
     image: user?.imageUrl || userInfo?.image,
-    type: userInfo?.type,
     phone: userInfo?.phone,
   };
   return (
@@ -42,8 +39,8 @@ const Onboarding = async () => {
       <div className="px-10 fixed rounded-full lg:right-2  -right-4 top-10">
         <SignOutbutton />
       </div>
-      <h1 className="font-bold text-white">Onboarding</h1>
-      <p className=" text-gray-500 my-6">
+      <h1 className="font-bold text-[#ffffff]">Onboarding</h1>
+      <p className=" text-gray-100 my-6">
         This is where you will be able to create a new account.
       </p>
       <div className=" bg-dark-2  lg:p-10 p-2 ">

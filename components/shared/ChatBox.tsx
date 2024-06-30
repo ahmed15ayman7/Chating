@@ -11,6 +11,7 @@ import { formatDistanceToNow,format } from "date-fns";
 import { pusherClient } from "@/lib/pusher";
 import { GetChat } from "@/lib/actions/room.actions";
 import { currentUser } from '@clerk/nextjs/server';
+import { SignOutButton, SignedIn } from "@clerk/nextjs";
 
 interface User {
   _id: string;
@@ -141,13 +142,13 @@ const ChatBox: React.FC<{ Ids?: string }> = ({ Ids }) => {
   let result=chat.chat.users.filter((user:{_id:string}) => user._id !==userId)[0];
   return  (
     <div className=" bottom-0 p-4 pb-10 relative rounded-lg w-full h-full flex flex-col">
-      <div className=" bg-dark-1 flex z-50 absolute top-0 left-0 right-0">
+      <div className="  flex z-50 absolute top-0 left-0 right-0">
       <Link
           href={"/messaging"}
           className="px-2 py-2 bg-blue-500 text-white rounded-lg max-xl:block hidden">
           <Image src="/assets/Goback.svg" alt="Goback" height={20} width={20} />
         </Link>
-        <div className="user-card_avatar max-xl:p-0 p-1">
+        <div className="user-card_avatar bg-[#ffffff20] max-xl:p-0 p-1">
         <div className="relative   aspect-square h-[48px] w-[48px]  ">
                       <img
                         src={result?.image}
@@ -157,9 +158,19 @@ const ChatBox: React.FC<{ Ids?: string }> = ({ Ids }) => {
                     </div>
                 {/* <Image src={result?.image} alt={result?.name} height={48} width={48} className=' cursor-pointer rounded-full object-contain'/> */}
             <div className=" flex-1 text-ellipsis">
-                <h3 className=' text-base-semibold text-light-1'>{result?.name}</h3>
+                <h3 className=' text-base-semibold text-[#ffffff]'>{result?.name}</h3>
                 {/* <p className=" text-small-semibold text-gray-1">@{result?.username}</p> */}
             </div>
+            <div className="px-10">
+          <SignedIn>
+            <SignOutButton redirectUrl="/sign-in">
+              <div className="flex gap-4 cursor-pointer">
+                <Image src='/assets/logout.svg' alt='logout' width={24} height={24}/>
+                <span className=' text-[#fff]  max-lg:hidden'>logout</span>
+              </div>
+            </SignOutButton>
+          </SignedIn>
+        </div>
      
     </div>
         
@@ -170,7 +181,7 @@ const ChatBox: React.FC<{ Ids?: string }> = ({ Ids }) => {
           const timestamp2 = formatDistanceToNow(message.timestamp);
           return (
             <div key={index} className={`mb-2 flex ${message.sender._id===userId?"":"flex-row-reverse"}`}>
-              <div className={`flex relative w-fit min-w-[15rem] pb-3 pe-3 rounded-lg ${message.sender._id===userId?"bg-[#FF971D] ":" bg-primary-500 text-[#ffffff] "}`}>
+              <div className={`flex relative w-fit min-w-[15rem] pb-3 pe-3 rounded-lg ${message.sender._id===userId?"bg-[#429df5] ":" bg-[#d16cca] text-[#ffffff] "}`}>
 
               <div className="">
               <div className="relative   aspect-square h-[40px] w-[40px]  mr-2 ">

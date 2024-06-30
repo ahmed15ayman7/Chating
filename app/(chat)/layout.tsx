@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     description: 'CHATY is a seamless instant messaging platform designed for real-time communication. Connect with friends, family, and colleagues through text, voice, and video chat. Enjoy features like group chats, media sharing, and end-to-end encryption to ensure your conversations are secure and private. Available on all major platforms, ChatApp keeps you connected anytime, anywhere.',
     images: [
       {
-        url: 'https://www.sporton.website/logo.png',
+        url: '/logo.jpg',
         alt: 'CHATY LOGO',
       },
     ],
@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en"  >
-      <body className={inter.className}>
+      <body className={inter.className+"bg-[#201325]"}>
       <main className=' flex flex-row w-full '>
         <section className="main-container p-0" >
         <div className=" w-full ">
