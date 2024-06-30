@@ -57,7 +57,7 @@ export let SugCard = ({
             <div className=" max-sm:w-16 max-sm:h-16 w-20 h-20 relative ">
               <Image src="/logo5.gif" alt="" fill className="" />
             </div>
-            <p className="ms-2 text-[#FF971D] -translate-x-10">CHATY</p>
+            <p className="ms-2 text-[#FF971D] -translate-x-10">HR CHAT</p>
           </div>
         </Link>
       )}
