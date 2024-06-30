@@ -23,7 +23,7 @@ export const createMessage = async (
   RoomName: string|undefined,
 ): Promise<void> => {
   let sender=JSON.parse(senderId);
-  console.log("---------------------------------------------------------------------------------------------------")
+
   const message: Message = {
     content: content,
     sender:{

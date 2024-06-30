@@ -17,7 +17,7 @@ useEffect(() => {
     window.addEventListener('resize',()=>{setSize(window.innerWidth)})
 }, [size])
   return (
-    <div className=" bg-[url(/assets/bg.jpg)] bg-center max-sm:bg-cover bg-[length:100%_100%] bg-no-repeat">
+    <div className="">
       {/* sm and md */}
     { size&&size<1280&& <div className="flex relative justify-center items-center overflow-hidden h-[100vh] ">
     <RightSidebar isChat isxl islg={false} />
