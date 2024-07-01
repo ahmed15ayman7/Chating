@@ -14,7 +14,7 @@ export const SignOutbutton = () => {
               width={24}
               height={24}
             />
-            <span className=" text-white  max-lg:hidden">logout</span>
+            <span className=" text-[#ffffff]  max-lg:hidden">logout</span>
           </div>
         </SignOutButton>
       </SignedIn>
