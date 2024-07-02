@@ -31,14 +31,14 @@ export async function GetChat({
           { name: `${userId}-${friendId}` },
         ).populate({path:'users',model:User,select:'_id id name image sport'}).populate({path:"messages",model:Message,populate:[{path:"sender",model:User,select:"_id id name image sport"},{path:"recipient",model:User,select:"_id id name image sport"}]}).lean();
         if (ChatRoom) {
-            revalidatePath(path);
+            // revalidatePath(path);
             return {chat: ChatRoom, ids: `${userId}-${friendId}`}
         }else{
             const ChatRoom2:ChatROOM|null = await Room.findOne(
                 { name:`${friendId}-${userId}` },
             ).populate({path:'users',model:User,select:'_id id name image sport'}).populate({path:"messages",model:Message,populate:[{path:"sender",model:User,select:"_id id name image sport"},{path:"recipient",model:User,select:"_id id name image sport"}]}).lean();
             if (ChatRoom2) {
-                revalidatePath(path);
+                // revalidatePath(path);
                 return {chat: ChatRoom2, ids: `${friendId}-${userId}`}
             }else{
                 let createChat:ChatROOM|undefined = await addFriend({friendId: friendId, userId: userId,path: path,isFriend:true,isChat:true});
