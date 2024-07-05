@@ -1,43 +1,55 @@
-import { SignOutbutton } from "../../../components/cards/SignOutbutton";
+"use client"
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import AccountProfile from "../../../components/forms/AccountProfile";
 import { fetchUser } from "../../../lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import React from "react";
-// import { Metadata } from "next";
-
-// export const metadata: Metadata = {
-//   title: "SPORTEN | onboarding",
-// };
 interface usData {
-  id: string | undefined;
-  objectID: string | undefined;
+  _id: string | undefined;
+  email: string | undefined;
   username: string | null | undefined;
   name: string;
   bio: string;
-
   image: string | undefined;
   phone: string| undefined;
 }
-const Onboarding = async () => {
-  let user = await currentUser();
-  const userInfo = await fetchUser(user?.id);
+const Onboarding =  () => {
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [refrish, setrefrish] = useState<any>(null);
+  let navigate =useRouter()
+  useEffect(() => {
+    const fetchData = async () => {
+      let user=JSON.parse(`${localStorage.getItem('user')}`)
+      if(!user||user?.login===false) navigate.replace("/sign-in")
+        console.log(user.email)
+      try {
+        if(user.email!==undefined){
+          const userInfo = JSON.parse(`${await fetchUser(user.email)}`);
+          setUserInfo(userInfo)
+          if (userInfo?.onboarding) redirect("/");
+        }
+      } catch (error) {
+        
+        console.log("Error fetching data:", error);
+      }
+    };
 
-  if (!user) redirect("/sign-in");
-  if (userInfo?.onboarding) redirect("/");
+    fetchData();
+  }, [refrish]);
   let userData: usData = {
-    id: user?.id,
-    objectID: userInfo?._id,
-    username: user?.username || userInfo?.username,
-    name: user?.firstName || userInfo?.name || "",
+    _id:  userInfo?._id,
+    email:userInfo?.email,
+    username:userInfo?.username,
+    name: userInfo?.name || "",
     bio: userInfo?.bio || "",
-    image: user?.imageUrl || userInfo?.image,
+    image: "/preview.webp" || userInfo?.image,
     phone: userInfo?.phone,
   };
   return (
     <main className=" px-1 mx-auto py-12 flex flex-col max-w-3xl">
       <div className="px-10 fixed rounded-full lg:right-2  -right-4 top-10">
-        <SignOutbutton />
+        {/* <SignOutbutton /> */}
       </div>
       <h1 className="font-bold text-[#ffffff]">Onboarding</h1>
       <p className=" text-gray-100 my-6">

@@ -3,30 +3,36 @@ import { useState, useEffect } from 'react';
 import { fetchAllUser, fetchUser } from "@/lib/actions/user.actions";
 import { SugCard } from "../cards/sugCard";
 import { useRouter } from 'next/navigation';
+// import { pusherServer } from '@/lib/pusher';
 
 interface Props {
   isChat?: boolean;
   Ids?: string;
+  setChat?: any;
   isxl?: boolean;
   islg?: boolean;
 }
 
-const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg }) => {
+const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg,setChat }) => {
   const [userInfo, setUserInfo] = useState<any>(null);
   const [users, setUsers] = useState<any>(null);
   const [refrish, setrefrish] = useState<any>(null);
   let navigate =useRouter()
   useEffect(() => {
+    let user=JSON.parse(`${localStorage.getItem('user')}`)
+    if(!user||user?.login===false) navigate.replace("/sign-in")
     const fetchData = async () => {
       try {
-        const userInfo = await fetchUser();
+        const userInfo = JSON.parse(`${await fetchUser(user.email)}`);
         const users = await fetchAllUser({
+          userId:userInfo?._id,
           searchString: "",
           pageNum: 1,
           pageSize: 100,
         });
         userInfo?setUserInfo(userInfo):navigate.replace("/onboarding");
         setUsers(users);
+        // pusherServer.trigger("user-online","online",userInfo?._id)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -40,7 +46,7 @@ const RightSidebar: React.FC<Props> = ({ isChat, Ids, isxl,islg }) => {
       <div className="flex flex-1 flex-col justify-start">
         {!isChat && <h1 className=" text-heading4-medium text-light-1 mb-6">Player</h1>}
         {users && users.users && userInfo &&
-          <SugCard result2={JSON.stringify(users.users)} userInfo2={JSON.stringify(userInfo)} type={"users"} isChat={isChat} Ids={Ids ? Ids : ''} islg={islg} refrish={setrefrish} />}
+          <SugCard result2={JSON.stringify(users.users)} userInfo2={JSON.stringify(userInfo)} type={"users"} isChat={isChat} Ids={Ids ? Ids : ''} islg={islg} refrish={setrefrish} setChat={setChat} />}
       </div>
       <div className="w-[1px] bg-[#d16cca]"></div>
     </section>

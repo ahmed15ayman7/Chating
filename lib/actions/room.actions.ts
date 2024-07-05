@@ -2,9 +2,9 @@
 import { connectDB } from "@/mongoose";
 import Room from "../models/room.model";
 import { revalidatePath } from "next/cache";
-import { addFriend } from "./user.actions";
 import User from '../models/user.models';
 import Message from "../models/messages.models";
+import { addFriend } from "./user.actions";
 interface AddFriendParams {
     userId?: string;
     friendId: string;

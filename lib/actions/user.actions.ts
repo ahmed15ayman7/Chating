@@ -1,16 +1,67 @@
 "use server";
 import { connectDB } from "@/mongoose";
-import { currentUser } from "@clerk/nextjs/server";
 import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 import Post from "../models/post.models";
 import User from "../models/user.models";
 import { PostData } from "./post.actions";
-import Room from '../models/room.model';
-import { redirect } from 'next/navigation';
+import bcrypt from 'bcrypt';
+import { signUpSchema,loginSchema } from '@/lib/validations/authSchemas';
 import Message from "../models/messages.models";
+import Room from "../models/room.model";
+
+export async function Regester(data: any) {
+        try {
+            connectDB();
+      const { email, password } = signUpSchema.parse(data);
+
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        return "Email already in use" ;
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = new User({
+        email,
+        password: hashedPassword,
+      });
+
+      await newUser.save();
+
+      return "true"
+    } catch (error:any) {
+      return  `${error.errors}` ;
+    }
+  
+}
+export async function LoginF(data: any) {
+  try {
+    const { email, password } = loginSchema.parse(data);
+    const user = await User.findOne({ email: email});
+    if (!user) {
+      console.log( "Invalid email or password" )
+      return "Invalid email or password" 
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      console.log("Invalid  password")
+      return "Invalid password"
+    }
+
+    console.log( "Login successful")
+    return "Login successful" 
+  } catch (error:any) {
+    console.log(error);
+    return  `${error}` ;
+  }
+  
+}
+
 interface props {
   userId: string | undefined;
+  email: string | undefined;
   username: string;
   name: string;
   bio: string;
@@ -22,23 +73,16 @@ export interface UserData {
   _id: string;
   id: string;
   username: string;
+  email:string;
   name: string;
   bio: string;
   image: string;
   phone: string;
-  posts: PostData[];
-  communities: string[];
   onboarding: boolean;
-  friends: {
-    _id: string;
-    id: string;
-    name: string;
-    username: string;
-    image: string;
-  }[];
 }
 export interface Result {
   _id: string|undefined;
+  email: string|undefined;
   name: string|undefined;
   image: string|undefined;
   id: string|undefined;
@@ -48,6 +92,7 @@ export interface Result {
 }
 export async function updateUser({
   userId,
+  email,
   username,
   name,
   bio,
@@ -58,7 +103,7 @@ export async function updateUser({
   connectDB();
   try {
     await User.findOneAndUpdate(
-      { id: userId },
+       {email:email},
       {
         username: username,
         bio: bio,
@@ -77,26 +122,17 @@ export async function updateUser({
     console.log(`failed to update user: ${error.message}`);
   }
 }
-export async function fetchUser(userId?: string | undefined) {
-  connectDB();
+export async function fetchUser(email: string | undefined) {
   try {
-      const user =userId?{id:'jjj'}:await currentUser();
-      if (!user) return redirect("/sign-in");
-    let id=userId?userId:user.id;
-    let userInfo: UserData | null = await User.findOne({ id: id })
-      .populate({
-        path: "friends",
-        model: User,
-        select: "id image name username sport",
-      })
-      .lean();
+    connectDB();
+    let userInfo: UserData | null = await User.findOne({ email: email })
 
     if (!userInfo) {
       console.log("user not found");
       console.log("found user with id ");
     }
-
-    return userInfo;
+    
+    return JSON.stringify( userInfo);
   } catch (error: any) {
     console.log(`not found user: ${error.message}`);
   }
@@ -106,18 +142,19 @@ export async function fetchAllUser({
   pageNum = 1,
   pageSize = 20,
   sortBy = "desc",
+  userId
 }: {
   searchString: string;
+  userId: string;
   pageNum: number;
   pageSize: number;
   sortBy?: SortOrder;
 }) {
   try {
     connectDB();
-    let user = await currentUser();
     let skipAmount = (pageNum - 1) * pageSize;
     let regex = new RegExp(searchString, "i");
-    let query: FilterQuery<typeof User> = { id: { $ne: user?.id } };
+    let query: FilterQuery<typeof User> = { _id: { $ne:userId  } };
     if (searchString.trim() !== "") {
       query.$or = [
         { name: { $regex: regex } },
@@ -266,32 +303,3 @@ export async function addFriend({
   }
 }
 
-// export async function addFriend({
-//   friendId,
-//   userId,
-//   path,
-//   isFriend,
-// }: AddFriendParams) {
-//   connectDB();
-//   try {
-//     if (!userId || !friendId) {
-//       console.log("userId أو friendId غير موجود");
-//       return;
-//     }
-
-//     const updateOperation = isFriend
-//       ? { $pull: { friends: friendId } }
-//       : { $push: { friends: friendId } };
-
-//     await User.findByIdAndUpdate(userId, updateOperation);
-//     await User.findByIdAndUpdate(
-//       friendId,
-//       isFriend ? { $pull: { friends: userId } } : { $push: { friends: userId } }
-//     );
-
-//     console.log("نجاح في إضافة/إزالة الصديق");
-//     revalidatePath(path);
-//   } catch (error: any) {
-//     console.log(`فشل في إضافة/إزالة الصديق: ${error.message}`);
-//   }
-// }

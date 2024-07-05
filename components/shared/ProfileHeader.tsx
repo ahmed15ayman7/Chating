@@ -1,6 +1,4 @@
 "use client";
-import { addFriend } from "@/lib/actions/user.actions";
-import { SignedIn, SignOutButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -36,20 +34,7 @@ const ProfileHeader = ({
   type,
   myId,
 }: props) => {
-  let router = useRouter();
-  let pathname = usePathname();
-  let isFriend =
-    friends?.filter(
-      (friend) => friend.id === userId || friend.id === userAuthId
-    ).length === 1;
-  let handleAddFriend = async () => {
-    await addFriend({
-      friendId: accountId,
-      userId: myId,
-      path: pathname,
-      isFriend: isFriend,
-    });
-  };
+
   let regLink = /https?:\/\/((www.)?\w+\d*.?\w*\/?)+/gi;
   let islink = bio.match(regLink);
   return (
@@ -147,35 +132,8 @@ const ProfileHeader = ({
         ) : (
           <div></div>
         )}
-        {userId !== userAuthId ? (
-          <div className="grow">
-            <button
-              className="flex no-underline gap-4 cursor-pointer"
-              onClick={handleAddFriend}>
-              <span
-                className={` text-white ${
-                  isFriend ? "text-primary-500" : ""
-                } max-lg:hidden`}>
-                {isFriend ? "in your Team" : "add your Team"}
-              </span>
-              <Image
-                src={
-                  isFriend ? "/assets/user-true.svg" : "/assets/user-plus.svg"
-                }
-                alt="add friend"
-                className=""
-                width={24}
-                height={24}
-              />
-            </button>
-          </div>
-        ) : (
-          <div></div>
-        )}
         {type === "User" && userId === userAuthId ? (
           <div className="max-sm:flex hidden ">
-            <SignedIn>
-              <SignOutButton redirectUrl="/sign-in">
                 <div className="flex gap-4 cursor-pointer">
                   <Image
                     src="/assets/logout.svg"
@@ -184,8 +142,6 @@ const ProfileHeader = ({
                     height={24}
                   />
                 </div>
-              </SignOutButton>
-            </SignedIn>
           </div>
         ) : null}
         <div className="ml-2 mt-3 flex content-end   items-center gap-2">

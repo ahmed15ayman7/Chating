@@ -27,8 +27,8 @@ import "react-phone-number-input/style.css";
 
 interface props {
   userData: {
-    id: string | undefined;
-    objectID: string | undefined;
+    _id: string | undefined;
+    email: string | undefined;
     username: string | null | undefined;
     name: string;
     bio: string;
@@ -52,7 +52,6 @@ const AccountProfile = ({ userData }: props) => {
       phone: userData.phone ||"",
     },
   });
-  console.log(userData.phone)
   function handleImageChange(
     e: ChangeEvent<HTMLInputElement>,
     fieldChange: (value: string) => void
@@ -70,6 +69,7 @@ const AccountProfile = ({ userData }: props) => {
       readfile.readAsDataURL(file);
     }
   }
+  
   async function onSubmit(values: z.infer<typeof UserValidation>) {
     try {
       console.log("Submit update user ");
@@ -82,7 +82,8 @@ const AccountProfile = ({ userData }: props) => {
         }
       }
          await updateUser({
-            userId: userData.id,
+          email:userData.email,
+            userId: userData._id,
             username: values.username,
             name: values.name,
             bio: values.bio,
@@ -107,17 +108,19 @@ const AccountProfile = ({ userData }: props) => {
           control={form.control}
           name="profile_photo"
           render={({ field }) => (
-            <FormItem className="  flex items-center gap-4">
+            <FormItem className=" ">
+              <div className=" flex items-center gap-4">
+
+            
               <FormLabel className="account-form_image-label">
                 {field.value ? (
-                  <Image
-                    src={field.value}
-                    alt="profile_photo"
-                    width={96}
-                    height={96}
-                    priority
-                    className="rounded-full object-cover"
+                  <div className="relative aspect-square h-24 w-24  ">
+                  <img
+                   src={field.value}
+                    alt="post image"
+                    className="absolute inset-0 w-full h-full rounded-full object-cover"
                   />
+                </div>
                 ) : (
                   <Image
                     className="rounded-full max-h-[24px] max-w-[24px]"
@@ -137,6 +140,7 @@ const AccountProfile = ({ userData }: props) => {
                   onChange={(e) => handleImageChange(e, field.onChange)}
                 />
               </FormControl>
+              </div>
               <FormMessage />
             </FormItem>
           )}
